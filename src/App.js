@@ -1,84 +1,64 @@
-import React, { Component } from 'react';
-import tracks from './tracks';
-import github from './githubIcon.svg';
+import { createRef, useState } from 'react';
+import Tracks from './components/Tracks';
+import tracksData from './components/tracks-data';
+import { BsFillVolumeDownFill, BsFillVolumeUpFill } from 'react-icons/bs';
+import { AiFillGithub } from 'react-icons/ai';
 
-export class App extends Component {
-  state = {
-    volume: 50,
-    display: 'Welcome to my Drum Machine',
-  };
+function App() {
+  const [volume, setVolume] = useState(50);
+  const [display, setDisplay] = useState('Welcome to my Drum Machine');
 
-  btnMap = React.createRef();
+  const btnMap = createRef();
 
-  togglePlay = (e) => {
+  const togglePlay = (e) => {
     e.preventDefault();
-    const trackObj = tracks.filter((obj) => obj.id === e.target.id);
-    e.target.children[0].volume = this.state.volume / 100;
+    const trackObj = tracksData.filter((obj) => obj.id === e.target.id);
+    e.target.children[0].volume = volume / 100;
     e.target.children[0].play();
-    this.setState({
-      display: trackObj[0].id,
-    });
+    setDisplay(trackObj[0].id);
   };
 
-  handlePress = (e) => {
+  const handlePress = (e) => {
     e.preventDefault();
-    const buttons = [...this.btnMap.current.childNodes].filter(
+    const buttons = [...btnMap.current.childNodes].filter(
       (item) => item.className === 'drum-pad'
     );
     const button = buttons.filter(
       (btn) => parseInt(btn.attributes.keycode.value) === e.keyCode
     );
     if (button.length > 0) {
-      button[0].childNodes[0].volume = this.state.volume / 100;
+      button[0].childNodes[0].volume = volume / 100;
       button[0].childNodes[0].play();
-      this.setState({ display: button[0].id });
+      setDisplay(button[0].id);
     }
   };
 
-  handleChange = (e) => {
+  const handleChange = (e) => {
     const { value } = e.target;
-    this.setState({ volume: value, display: `Volume: ${value}` });
+    setVolume(value);
+    setDisplay(`Volume: ${value}`);
   };
 
-  render() {
-    const buttons = tracks.map((obj) => {
-      return (
-        <button
-          className="drum-pad"
-          id={obj.id}
-          onClick={this.togglePlay}
-          keycode={obj.keyCode}
-          key={obj.id}
-        >
-          <audio
-            className="clip"
-            id={obj.keyTrigger}
-            preload="auto"
-            src={obj.url}
-          ></audio>
-          {obj.keyTrigger}
-        </button>
-      );
-    });
-    return (
-      <div className="App" onKeyDown={this.handlePress} tabIndex={-1}>
+  return (
+    <div className="App">
+      <div className="App" onKeyDown={handlePress} tabIndex={-1}>
         <h1>Drum Machine!</h1>
         <div id="drum-machine">
-          <div id="display">{this.state.display}</div>
-          <div className="buttons-container" ref={this.btnMap}>
-            {buttons}
+          <div id="display">{display}</div>
+          <div className="buttons-container" ref={btnMap}>
+            <Tracks togglePlay={togglePlay} />
           </div>
           <div className="slide-container">
-            <span className="material-icons">volume_down</span>
+            <BsFillVolumeDownFill />
             <input
               type="range"
               min="0"
               max="100"
-              value={this.state.volume}
+              value={volume}
               className="slider"
-              onChange={this.handleChange}
+              onChange={handleChange}
             ></input>
-            <span className="material-icons">volume_up</span>
+            <BsFillVolumeUpFill />
             <br />
           </div>
         </div>
@@ -89,13 +69,13 @@ export class App extends Component {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <img src={github} alt="github icon" />
+            <AiFillGithub />
             Bryan Taduran
           </a>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default App;
