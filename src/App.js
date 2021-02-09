@@ -1,6 +1,10 @@
 import { createRef, useState } from 'react';
+
+// Components
 import Tracks from './components/Tracks';
 import tracksData from './components/tracks-data';
+
+// Icons
 import { BsFillVolumeDownFill, BsFillVolumeUpFill } from 'react-icons/bs';
 import { AiFillGithub } from 'react-icons/ai';
 
@@ -10,6 +14,7 @@ function App() {
 
   const btnMap = createRef();
 
+  // Trigger the pressed btn and set the display to the button name
   const togglePlay = (e) => {
     e.preventDefault();
     const trackObj = tracksData.filter((obj) => obj.id === e.target.id);
@@ -18,6 +23,7 @@ function App() {
     setDisplay(trackObj[0].id);
   };
 
+  // Same as togglePlay() but this is triggered on keyboard press
   const handlePress = (e) => {
     e.preventDefault();
     const buttons = [...btnMap.current.childNodes].filter(
@@ -33,6 +39,7 @@ function App() {
     }
   };
 
+  // Set the volume and the display when volume is changed
   const handleChange = (e) => {
     const { value } = e.target;
     setVolume(value);
@@ -43,11 +50,16 @@ function App() {
     <div className="App">
       <div className="App" onKeyDown={handlePress} tabIndex={-1}>
         <h1>Drum Machine!</h1>
+
+        {/* Main Drum Machine */}
         <div id="drum-machine">
           <div id="display">{display}</div>
+
           <div className="buttons-container" ref={btnMap}>
             <Tracks togglePlay={togglePlay} />
           </div>
+
+          {/* Volume adjust */}
           <div className="slide-container">
             <BsFillVolumeDownFill />
             <input
@@ -57,11 +69,12 @@ function App() {
               value={volume}
               className="slider"
               onChange={handleChange}
-            ></input>
+            />
             <BsFillVolumeUpFill />
-            <br />
           </div>
         </div>
+
+        {/* Portfolio Link */}
         <div className="credits">
           <p>Designed and Coded By</p>
           <a

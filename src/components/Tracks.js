@@ -1,5 +1,6 @@
 import tracksData from './tracks-data';
 
+// Map through the tracksData and output a button for each one.
 const Tracks = ({ togglePlay }) => {
   return (
     <>
